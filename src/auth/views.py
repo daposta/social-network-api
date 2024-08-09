@@ -33,8 +33,23 @@ async def login(formData: OAuth2PasswordRequestForm = Depends(), db: Session = D
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail= "Incorrect username  or password")
     
     access_token = await create_access_token(db_user.username, db_user.id )
-    return {"access_token": access_token, "token_type": "bearer",}
+    return {"access_token": access_token, "token_type": "bearer"}
 
-# get user
+
+# get current user
+@router.get("/me", status_code=status.HTTP_200_OK, response_model=UserSchema)
+async def current_user(token: str, db: Session = Depends(get_db)):
+    db_user =  await get_current_user(db, token)
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    return db_user
+
+
+# update user
+@router.put("/{username}", status_code=status.HTTP_204_NO_CONTENT )
+async def update_user(username: str, token: str, user_update: UserUpdate, db:Session = Depends(get_db)):
+    pass
+
+
 # update user
 # reset password
