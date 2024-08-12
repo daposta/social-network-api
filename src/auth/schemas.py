@@ -30,7 +30,7 @@ class UserUpdate(BaseModel):
 
 class User(UserBase):
     id: int
-    created_date: datetime
+    created_at: datetime
 
     class Config:
         orm_mode = True

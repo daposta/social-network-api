@@ -9,7 +9,9 @@ from .schemas import UserCreate, UserUpdate
 from .models import User
 
 # used for hashing password
-bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  #used for hashing password
+bcrypt_context = CryptContext(
+    schemes=["bcrypt"], deprecated="auto"
+)  # used for hashing password
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/v1/auth/token")
 SECRET_KEY = "secretkey"
 ALGORITHM = "HS256"
@@ -29,7 +31,7 @@ async def create_access_token(username: str, id: int):
     expires = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRE_MINS)
     encode.update({"exp": expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
- 
+
 
 # get current user from token
 async def get_current_user(db: Session, token: str = Depends(oauth2_bearer)):
@@ -38,9 +40,8 @@ async def get_current_user(db: Session, token: str = Depends(oauth2_bearer)):
         username: str = payload.get("sub")
         id: str = payload.get("id")
         expires: datetime = payload.get("exp")
-        print(expires)
 
-        if datetime(expires) < datetime.now():
+        if datetime.fromtimestamp(expires) < datetime.now():
             return None
 
         if username is None or id is None:
