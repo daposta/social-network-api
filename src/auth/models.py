@@ -1,8 +1,10 @@
 # db models
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Enum
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..database import Base
 from .enums import Gender
+from ..post.models import Post
 
 
 class User(Base):
@@ -20,3 +22,5 @@ class User(Base):
     profile_pic = Column(String)
     bio = Column(String)
     location = Column(String)
+
+    posts = relationship("Post", back_populates="author")
